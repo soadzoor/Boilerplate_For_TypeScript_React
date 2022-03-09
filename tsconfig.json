@@ -11,6 +11,7 @@
     "allowJs": false,
     "sourceMap": true,
     "outDir": "build/prod/js",
+    "strict": true,
     "noImplicitAny": true,
     "strictNullChecks": true,
     "noImplicitOverride": true,
