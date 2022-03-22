@@ -25,6 +25,22 @@
 		"react-hooks"
 	],
 	"rules": {
+		"eol-last": [
+			"error",
+			"always"
+		],
+		"linebreak-style": [
+			"error",
+			"windows"
+		],
+		"no-multiple-empty-lines": [
+			"error",
+			{
+				"max": 2,
+				"maxEOF": 1,
+				"maxBOF": 0 
+			}
+		],
 		"react-hooks/rules-of-hooks": "error",
 		"react-hooks/exhaustive-deps": "error",
 		"brace-style": [

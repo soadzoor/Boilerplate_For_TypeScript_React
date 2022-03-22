@@ -17,3 +17,4 @@ export default function Button(props: IProps)
 		<ButtonStyled onClick={props.onClick}>{props.label}</ButtonStyled>
 	);
 }
+

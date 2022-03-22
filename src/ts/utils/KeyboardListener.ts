@@ -1,4 +1,3 @@
-
 import {Signal} from "../interaction/Signal";
 
 /**
