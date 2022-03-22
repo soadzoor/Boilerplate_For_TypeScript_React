@@ -1,4 +1,9 @@
 import * as React from "react";
+import styled from "styled-components";
+
+const ButtonStyled = styled.div({
+	cursor: "pointer"
+});
 
 interface IProps
 {
@@ -9,6 +14,6 @@ interface IProps
 export default function Button(props: IProps)
 {
 	return (
-		<div onClick={props.onClick}>{props.label}</div>
+		<ButtonStyled onClick={props.onClick}>{props.label}</ButtonStyled>
 	);
 }
