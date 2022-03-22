@@ -1,5 +1,7 @@
+
 import React, {useCallback, useState} from "react";
 import ReactDOM from "react-dom";
+import Button from "./components/Button";
 
 function App()
 {
@@ -14,7 +16,7 @@ function App()
 		<div>
 			Hello React
 			<div>{count}</div>
-			<button onClick={onButtonClick}>Click me!</button>
+			<Button onClick={onButtonClick} label="Click me!" />
 		</div>
 	);
 }
