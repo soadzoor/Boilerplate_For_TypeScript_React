@@ -1,33 +1,27 @@
-import * as React from "react";
-import * as ReactDOM from "react-dom";
+import React, {useCallback, useState} from "react";
+import ReactDOM from "react-dom";
 
-interface IAppProps
+function App()
 {
+	const [count, setCount] = useState<number>(0);
 
-}
-
-interface IAppState
-{
-	
-}
-
-export class App extends React.Component<IAppProps, IAppState>
-{
-	constructor(props: IAppProps)
+	const onButtonClick = useCallback(() =>
 	{
-		super(props);
+		setCount(count + 1);
+	}, [count]);
 
-		this.state = {};
-	}
-
-	public override render()
-	{
-		return (
-			<>
-				Hello React
-			</>
-		);
-	}
+	return (
+		<div>
+			Hello React
+			<div>{count}</div>
+			<button onClick={onButtonClick}>Click me!</button>
+		</div>
+	);
 }
 
-ReactDOM.render(<App />, document.getElementById("App"));
+ReactDOM.render(
+	<React.StrictMode>
+		<App />
+	</React.StrictMode>,
+	document.getElementById("App")
+);

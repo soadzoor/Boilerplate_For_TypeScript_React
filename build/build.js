@@ -5,16 +5,20 @@ const BUILD_TEMP = "build/temp";
 const NODE_MODULES_PATH = "./node_modules";
 const fs = require("fs"); // it's included in node.js by default, no need for any additional packages
 const args = process.argv.slice(2);
-
-process.env.NODE_ENV = args.includes("--prod") ? "production" : "development";
-
+if (args.includes("--prod"))
+{
+	process.env.NODE_ENV = "production";
+}
+const splitCode = true; // for dynamic import (await import)
 const isProduction = process.env.NODE_ENV === "production";
 const buildFolder = isProduction ? BUILD_PROD : BUILD_DEV;
 const checkForTypeErrors = !args.includes("--fast");
 
-const reactFileSuffixDevelopment = "development";
-const reactFileSuffixProd = "production.min";
-const reactFileSuffix = isProduction ? reactFileSuffixProd : reactFileSuffixDevelopment;
+const yellowConsole = "\x1b[33m%s\x1b[0m";
+
+const timeStamp = getDateTime();
+let jsFile = "App.ts";
+const jsSubFolder = "src";
 
 const {build} = require("esbuild");
 
@@ -26,7 +30,7 @@ async function buildApp()
 
 	if (checkForTypeErrors)
 	{
-		console.log("\x1b[33m%s\x1b[0m", "Looking for type errors...");
+		console.log(yellowConsole, "Looking for type errors...");
 
 		try
 		{
@@ -36,7 +40,7 @@ async function buildApp()
 			}
 			else
 			{
-				res = exec("tsc", `--incremental --composite false --tsBuildInfoFile ${BUILD_TEMP}/tsconfig.tsbuildinfo`);
+				res = exec("tsc", `--noEmit --incremental --composite false --tsBuildInfoFile ${BUILD_TEMP}/tsconfig.tsbuildinfo`);
 			}
 		}
 		catch (e)
@@ -46,50 +50,64 @@ async function buildApp()
 		}
 	}
 
-	console.log("\x1b[33m%s\x1b[0m", "Copying static files...");
+	console.log(yellowConsole, "Copying static files...");
 
 	shx(`rm -rf ${buildFolder}`);
 	shx(`mkdir ${buildFolder}/`);
 	shx(`cp src/index.html ${buildFolder}/index.html`);
 
-	shx(`mkdir -p ${buildFolder}/libs/react/umd`);
-	shx(`mkdir -p ${buildFolder}/libs/react-dom/umd`);
-
-	shx(`cp ${NODE_MODULES_PATH}/react/umd/react.${reactFileSuffix}.js ${buildFolder}/libs/react/umd/react.${reactFileSuffix}.js`);
-	shx(`cp ${NODE_MODULES_PATH}/react-dom/umd/react-dom.${reactFileSuffix}.js ${buildFolder}/libs/react-dom/umd/react-dom.${reactFileSuffix}.js`);
-
 	assets(buildFolder);
 
 	const promises = [
-		css(buildFolder),
-		buildJs(buildFolder)
+		buildJs(`${buildFolder}/${jsSubFolder}`),
+		css(buildFolder)
 	];
-	if (isProduction)
-	{
-		promises.push(
-			// shx(`sed -i 's/${reactFileSuffixDevelopment}.js/${reactFileSuffixProd}.js/g' ${buildFolder}/index.html`);
-			// sed is not built-in to windows by default, so here's a cross-platform solution:
-			replaceTextInFile(`${buildFolder}/index.html`, reactFileSuffixDevelopment, reactFileSuffixProd)
-		);
-	}
 
 	await Promise.all(promises);
+
+	console.log(yellowConsole, "Adding timestamps to filenames...");
+
+	const methodsToDoAfterBundling = [];
+	let finalJsFullPath = "";
+	if (splitCode)
+	{
+		const originalJsFilePath = `${jsSubFolder}/App.js`;
+		const newJsFilePath = `${jsSubFolder}/App.${timeStamp}.js`;
+		finalJsFullPath = `${buildFolder}/${newJsFilePath}`;
+
+		methodsToDoAfterBundling.push(() =>
+		{
+			shx(`mv ${buildFolder}/${originalJsFilePath} ${finalJsFullPath}`);
+		});
+		await replaceTextInFile(`${buildFolder}/index.html`, `<script type="module" src="./ts/App.tsx"></script>`, `<script type="module" src="${newJsFilePath}"></script>`);
+	}
+	else
+	{
+		const originalJsFile = jsFile;
+		jsFile = originalJsFile.replace(".js", `.${timeStamp}.js`);
+		finalJsFullPath = `${buildFolder}/${jsSubFolder}/${jsFile}`
+		await replaceTextInFile(`${buildFolder}/index.html`, `<script type="module" src="${jsSubFolder}/${originalJsFile}"></script>`, `<script src="${jsSubFolder}/${jsFile}"></script>`);
+	}
+
+	for (const methodToDo of methodsToDoAfterBundling)
+	{
+		methodToDo();
+	}
 
 	if (isProduction)
 	{
 		console.log("\x1b[33m%s\x1b[0m", "Minifying shaders...");
-		await minifyShaders(buildFolder);
+		await minifyShaders(finalJsFullPath);
 	}
 
 	console.log("\x1b[32m%s\x1b[0m", "Build done!");
 	console.timeEnd("Build time");
 }
 
-async function minifyShaders(buildFolder)
+async function minifyShaders(finalJsFullPath)
 {
 	// Assumes we're using backticks (`) for shaders, and define "precision highp float" in the beginning
-	const bundleFile = bundleFilePath(buildFolder);
-	const bundleJs = await readTextFile(bundleFile);
+	const bundleJs = await readTextFile(finalJsFullPath);
 
 	let optimizedBundleJs = bundleJs;
 
@@ -111,7 +129,7 @@ async function minifyShaders(buildFolder)
 		shaderStartIndex = optimizedBundleJs.indexOf(keyword, shaderStartIndex);
 	}
 
-	await writeTextFile(bundleFile, optimizedBundleJs);
+	await writeTextFile(finalJsFullPath, optimizedBundleJs);
 }
 
 function minifyGlsl(input)
@@ -148,6 +166,24 @@ function minifyGlsl(input)
 	return output;
 }
 
+function formatDateSegment(dateSegment /* number */)
+{
+	return `${dateSegment}`.length < 2 ? `0${dateSegment}` : `${dateSegment}`;
+}
+
+function getDateTime()
+{
+	const d = new Date();
+	let year = d.getFullYear();
+	let month = formatDateSegment(d.getMonth() + 1);
+	let day = formatDateSegment(d.getDate());
+
+	let hours = formatDateSegment(d.getHours());
+	let minutes = formatDateSegment(d.getMinutes());
+	let seconds = formatDateSegment(d.getSeconds());
+
+	return [year, month, day, hours, minutes, seconds].join("");
+}
 
 function shx(command)
 {
@@ -193,7 +229,7 @@ function exec(command, args)
 
 function assets(buildFolder)
 {
-	console.log("\x1b[33m%s\x1b[0m", "Copying assets...");
+	console.log(yellowConsole, "Copying assets...");
 	shx(`rm -rf ${buildFolder}/assets`);
 	shx(`cp -R ${LOCAL_ROOT}/src/assets ${buildFolder}/assets`);
 }
@@ -236,8 +272,6 @@ function writeTextFile(filePath, data)
 
 async function replaceTextInFile(filePath, oldText, newText)
 {
-	// https://stackoverflow.com/questions/12398640/javascript-regex-pattern-that-contains-parentheses
-	oldText = oldText.replace(/[-/\\^$*+?.()|[\]{}]/g, '\\$&');
 	const regExp = new RegExp(oldText, "g");
 	const fileContent = await readTextFile(filePath);
 	await writeTextFile(filePath, fileContent.replace(regExp, newText));
@@ -245,59 +279,57 @@ async function replaceTextInFile(filePath, oldText, newText)
 
 function css(buildFolder)
 {
-	return new Promise((resolve, reject) =>
+	return new Promise(async (resolve, reject) =>
 	{
 		const sass = require("sass");
 
-		console.log("\x1b[33m%s\x1b[0m", "Creating CSS from SASS...");
+		console.log(yellowConsole, "Creating CSS from SASS...");
 
 		const outFolder = `${buildFolder}/css`;
-		const outFile = "main.css";
+		const originalFileName = `main.scss`;
+		const timeStampedFileName = `main.${timeStamp}.css`;
+		const outFile = `${outFolder}/${timeStampedFileName}`;
 
-		const result = sass.render({
-			file: `${LOCAL_ROOT}/src/sass/main.scss`,
-			sourceMap: !isProduction,
-			outFile: outFile
-		}, async function (err, result)
+		try
 		{
-			if (err)
-			{
-				console.error(err);
-				reject();
-			}
-			else if (result)
-			{
-				shx(`mkdir ${outFolder}`);
-				const promises = [
-					writeTextFile(`${outFolder}/${outFile}`, result.css)
-				];
-				if (result.map)
+			const result = await sass.compileAsync(
+				`${LOCAL_ROOT}/src/sass/main.scss`,
 				{
-					promises.push(
-						writeTextFile(`${outFolder}/${outFile}.map`, result.map.toString())
-					);
+					sourceMap: !isProduction
 				}
-				await Promise.all(promises);
-				if (isProduction)
-				{
-					exec_module("uglifycss", `${buildFolder}/css/main.css --output ${buildFolder}/css/main.css`);
-				}
+			);
 
-				resolve();
+			shx(`mkdir ${outFolder}`);
+			const promises = [
+				writeTextFile(outFile, result.css)
+			];
+			if (result.map)
+			{
+				promises.push(
+					writeTextFile(`${outFile}.map`, result.map.toString())
+				);
 			}
-		});
+			await Promise.all(promises);
+
+			if (isProduction)
+			{
+				exec_module("uglifycss", `${outFile} --output ${outFile}`);
+			}
+
+			await replaceTextInFile(`${buildFolder}/index.html`, `sass/${originalFileName}`, `css/${timeStampedFileName}`);
+
+			resolve();
+		}
+		catch (err)
+		{
+			console.error(err);
+			reject();
+		}
 	});
-}
-
-function bundleFilePath(buildFolder)
-{
-	return `${buildFolder}/js/app.bundle.js`;
 }
 
 function buildJs(buildFolder)
 {
-	const jsFile = bundleFilePath(buildFolder);
-
 	const define = {}
 
 	// See these for explanation: https://github.com/evanw/esbuild/issues/69
@@ -316,14 +348,20 @@ function buildJs(buildFolder)
 		minify: isProduction,
 		sourcemap: !isProduction,
 		bundle: true,
-		//splitting: true, // for dynamic import (await import)
-		//outdir: buildFolder,
-		outfile: jsFile,
-		define
-		//format: "esm"
+		splitting: splitCode,
+		outfile: `${buildFolder}/${jsFile}`,
+		define: define,
+		treeShaking: true
 	};
 
-	console.log("\x1b[33m%s\x1b[0m", "Bundling js...");
+	if (splitCode)
+	{
+		delete options.outfile;
+		options.outdir = `${buildFolder}`;
+		options.format = "esm";
+	}
+
+	console.log(yellowConsole, "Bundling js...");
 
 	return build(options);
 }

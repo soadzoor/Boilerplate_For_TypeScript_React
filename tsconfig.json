@@ -1,26 +1,20 @@
 {
   "compilerOptions": {
+    "jsx": "preserve",
     "baseUrl": "./src/ts/",
+    "allowSyntheticDefaultImports": true,
     "experimentalDecorators": true,
     "moduleResolution": "node",
     "module": "esnext",
     "importHelpers": true,
     "target": "es6",
-    "jsx": "react",
-    "downlevelIteration": true,
     "allowJs": false,
-    "sourceMap": true,
-    "outDir": "build/prod/js",
+    "strict": true,
     "noImplicitAny": true,
-    "strictNullChecks": true,
     "noImplicitOverride": true,
-    "strictBindCallApply": true,
-    "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true,
+    "skipLibCheck": true,
     "types": [
-      "node",
-      "react",
-      "react-dom"
+      "node"
     ],
     "lib": [
       "dom",
@@ -31,8 +25,7 @@
       "es2015.iterable",
       "es2015.promise",
       "es2015.symbol",
-      "es2015.symbol.wellknown",
-      "ES2019"
+      "es2015.symbol.wellknown"
     ]
   },
   "include": [

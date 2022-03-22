@@ -68,7 +68,7 @@ export class Constants
 
 	public static get isMac()
 	{
-		return /Mac/.test(navigator.userAgent) && !window.MSStream;
+		return /Mac/.test(navigator.userAgent) && !(window as any).MSStream;
 	}
 
 	public static get browserName()

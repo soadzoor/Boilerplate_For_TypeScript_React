@@ -4,6 +4,9 @@
   "description": "TypeScript - React",
   "main": "",
   "scripts": {
+    "start": "node build/start",
+    "eslint:report": "eslint \"src/**/*.{js,jsx,ts,tsx}\" --report-unused-disable-directives",
+    "eslint:fix": "eslint \"src/**/*.{js,jsx,ts,tsx}\" --report-unused-disable-directives --fix",
     "build": "node build/build",
     "build:prod": "node build/build --prod"
   },
@@ -14,17 +17,24 @@
   "author": "Peter Varga <soadzoor@gmail.com>",
   "license": "",
   "dependencies": {
-    "@types/node": "15.0.2",
-    "@types/react": "17.0.9",
-    "@types/react-dom": "17.0.6",
-    "esbuild": "0.12.7",
     "react": "17.0.2",
-    "react-dom": "17.0.2",
-    "sass": "1.34.1",
-    "sass-loader": "12.0.0",
-    "shx": "0.3.3",
-    "tslib": "2.2.0",
-    "typescript": "4.3.2",
-    "uglifycss": "0.0.29"
+    "react-dom": "17.0.2"
+  },
+  "devDependencies": {
+    "@types/node": "17.0.22",
+    "@types/react": "17.0.41",
+    "@types/react-dom": "17.0.14",
+    "@typescript-eslint/eslint-plugin": "5.16.0",
+    "@vitejs/plugin-react": "1.2.0",
+    "esbuild": "0.14.27",
+    "eslint": "8.11.0",
+    "eslint-plugin-import": "2.25.4",
+    "eslint-plugin-react-hooks": "4.3.0",
+    "sass": "1.49.9",
+    "shx": "0.3.4",
+    "tslib": "2.3.1",
+    "typescript": "4.6.2",
+    "uglifycss": "0.0.29",
+    "vite": "2.8.6"
   }
 }
