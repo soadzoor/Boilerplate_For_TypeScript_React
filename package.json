@@ -5,10 +5,11 @@
   "main": "",
   "scripts": {
     "start": "node build/start",
-    "eslint:report": "eslint \"src/**/*.{js,jsx,ts,tsx}\" --report-unused-disable-directives",
-    "eslint:fix": "eslint \"src/**/*.{js,jsx,ts,tsx}\" --report-unused-disable-directives --fix",
     "build:dev": "node build/build",
-    "build:prod": "node build/build --prod"
+    "build:prod": "node build/build --prod",
+    "eslint:report": "eslint --ext .js,.jsx,.ts,.tsx src --report-unused-disable-directives --max-warnings 0",
+    "eslint:fix": "npm run eslint:report -- --fix",
+    "install git hooks": "husky install"
   },
   "repository": {
     "type": "git",
@@ -16,6 +17,12 @@
   },
   "author": "Peter Varga <soadzoor@gmail.com>",
   "license": "",
+  "lint-staged": {
+    "*.{ts,tsx}": [
+      "npx tsc -p tsconfig.json",
+      "eslint --ext .js,.jsx,.ts,.tsx src --report-unused-disable-directives --max-warnings 0"
+    ]
+  },
   "dependencies": {
     "react": "17.0.2",
     "react-dom": "17.0.2",
@@ -32,6 +39,7 @@
     "eslint": "8.11.0",
     "eslint-plugin-import": "2.25.4",
     "eslint-plugin-react-hooks": "4.3.0",
+    "husky": "7.0.4",
     "sass": "1.49.9",
     "shx": "0.3.4",
     "tslib": "2.3.1",
