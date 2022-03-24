@@ -25,6 +25,8 @@
 		"react-hooks"
 	],
 	"rules": {
+		// We're using typescript's resolver
+		"import/no-unresolved": "off",
 		"eol-last": [
 			"error",
 			"always"
