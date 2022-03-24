@@ -17,7 +17,7 @@ const checkForTypeErrors = !args.includes("--fast");
 const yellowConsole = "\x1b[33m%s\x1b[0m";
 
 const timeStamp = getDateTime();
-let jsFile = "App.ts";
+let jsFile = "main.js";
 const jsSubFolder = "src";
 
 const {build} = require("esbuild");
@@ -68,25 +68,26 @@ async function buildApp()
 	console.log(yellowConsole, "Adding timestamps to filenames...");
 
 	const methodsToDoAfterBundling = [];
+	const originalJsScriptInHTML = `<script type="module" src="./ts/main.tsx"></script>`;
 	let finalJsFullPath = "";
 	if (splitCode)
 	{
-		const originalJsFilePath = `${jsSubFolder}/App.js`;
-		const newJsFilePath = `${jsSubFolder}/App.${timeStamp}.js`;
+		const originalJsFilePath = `${jsSubFolder}/main.js`;
+		const newJsFilePath = `${jsSubFolder}/main.${timeStamp}.js`;
 		finalJsFullPath = `${buildFolder}/${newJsFilePath}`;
 
 		methodsToDoAfterBundling.push(() =>
 		{
 			shx(`mv ${buildFolder}/${originalJsFilePath} ${finalJsFullPath}`);
 		});
-		await replaceTextInFile(`${buildFolder}/index.html`, `<script type="module" src="./ts/App.tsx"></script>`, `<script type="module" src="${newJsFilePath}"></script>`);
+		await replaceTextInFile(`${buildFolder}/index.html`, originalJsScriptInHTML, `<script type="module" src="${newJsFilePath}"></script>`);
 	}
 	else
 	{
 		const originalJsFile = jsFile;
 		jsFile = originalJsFile.replace(".js", `.${timeStamp}.js`);
 		finalJsFullPath = `${buildFolder}/${jsSubFolder}/${jsFile}`
-		await replaceTextInFile(`${buildFolder}/index.html`, `<script type="module" src="${jsSubFolder}/${originalJsFile}"></script>`, `<script src="${jsSubFolder}/${jsFile}"></script>`);
+		await replaceTextInFile(`${buildFolder}/index.html`, originalJsScriptInHTML, `<script src="${jsSubFolder}/${jsFile}"></script>`);
 	}
 
 	for (const methodToDo of methodsToDoAfterBundling)
@@ -316,7 +317,7 @@ function css(buildFolder)
 				exec_module("uglifycss", `${outFile} --output ${outFile}`);
 			}
 
-			await replaceTextInFile(`${buildFolder}/index.html`, `sass/${originalFileName}`, `css/${timeStampedFileName}`);
+			await replaceTextInFile(`${buildFolder}/index.html`, `./sass/${originalFileName}`, `./css/${timeStampedFileName}`);
 
 			resolve();
 		}
@@ -343,7 +344,7 @@ function buildJs(buildFolder)
 	}
 
 	const options = {
-		entryPoints: ["./src/ts/App.tsx"],
+		entryPoints: ["./src/ts/main.tsx"],
 		target: "es2017",
 		minify: isProduction,
 		sourcemap: !isProduction,

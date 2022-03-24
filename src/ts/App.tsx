@@ -1,8 +1,7 @@
 import React, {useCallback, useState} from "react";
-import ReactDOM from "react-dom";
 import Button from "./components/Button";
 
-function App()
+export default function App()
 {
 	const [count, setCount] = useState<number>(0);
 
@@ -19,10 +18,3 @@ function App()
 		</div>
 	);
 }
-
-ReactDOM.render(
-	<React.StrictMode>
-		<App />
-	</React.StrictMode>,
-	document.getElementById("App")
-);
