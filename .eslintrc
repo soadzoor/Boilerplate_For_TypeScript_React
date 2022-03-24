@@ -22,11 +22,18 @@
 	],
 	"plugins": [
 		"import",
-		"react-hooks"
+		"react-hooks",
+		"@typescript-eslint"
 	],
 	"rules": {
 		// We're using typescript's resolver
 		"import/no-unresolved": "off",
+		"@typescript-eslint/consistent-type-assertions": [
+			"error",
+			{
+				"assertionStyle": "as"
+			}
+		],
 		"eol-last": [
 			"error",
 			"always"
