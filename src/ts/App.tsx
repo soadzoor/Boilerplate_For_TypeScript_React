@@ -1,5 +1,6 @@
 import React, {useCallback, useState} from "react";
 import Button from "./components/Button";
+import {BrowserUtils} from "./utils/BrowserUtils";
 
 export default function App()
 {
@@ -12,6 +13,9 @@ export default function App()
 
 	return (
 		<div>
+			<div>
+				{BrowserUtils.siteUrl}
+			</div>
 			Hello React
 			<div>{count}</div>
 			<Button onClick={onButtonClick} label="Click me!" />

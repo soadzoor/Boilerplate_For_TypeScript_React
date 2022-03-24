@@ -163,7 +163,7 @@ export class KeyboardListener
 		// {
 		// 	this.enter.dispatch(event);
 		// }
-	}
+	};
 
 	private onKeyUp = (event: KeyboardEvent) =>
 	{
@@ -193,7 +193,7 @@ export class KeyboardListener
 		{
 			this.signals.up.dispatch(event);
 		}
-	}
+	};
 
 	protected allow(event: KeyboardEvent)
 	{

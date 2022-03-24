@@ -43,8 +43,12 @@
 				"maxBOF": 0 
 			}
 		],
+		"no-extra-semi": "error",
+		"no-unreachable": "error",
 		"react-hooks/rules-of-hooks": "error",
 		"react-hooks/exhaustive-deps": "error",
+		"quotes": ["error", "double"],
+		"prefer-template": "error",
 		"brace-style": [
 			"warn",
 			"allman",
@@ -56,6 +60,8 @@
 			"error",
 			"never"
 		],
+		"no-useless-concat": "error",
+		"curly": "error",
 		"indent": [
 			"error",
 			"tab",
@@ -77,6 +83,7 @@
 			{
 				"includeExports": true
 			}
-		]
+		],
+		"semi": ["error", "always"]
 	}
 }
