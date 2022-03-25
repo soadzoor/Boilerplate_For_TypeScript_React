@@ -2,7 +2,8 @@ import * as React from "react";
 import styled from "styled-components";
 
 const ButtonStyled = styled.div({
-	cursor: "pointer"
+	cursor: "pointer",
+	border: "1px solid black",
 });
 
 interface IProps

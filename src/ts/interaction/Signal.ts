@@ -6,16 +6,15 @@ interface ISignal
 	addOnce(listener: Function, listenerContext?: any): void;
 	remove(listener: Function, listenerContext?: any): boolean;
 	removeAll(): void;
-	halt(): void;
 	dispatch(...args: any[]): void;
 	bindings: IBinding[];
 }
 
 interface ISignalP1<T1> extends ISignal
 {
-	add     (listener: (p1: T1) => void, listenerContext?: any, priority?: number): void;
-	addOnce (listener: (p1: T1) => void, listenerContext?: any, priority?: number): void;
-	remove  (listener: (p1: T1) => void, listenerContext?: any): boolean;
+	add(listener: (p1: T1) => void, listenerContext?: any, priority?: number): void;
+	addOnce(listener: (p1: T1) => void, listenerContext?: any, priority?: number): void;
+	remove(listener: (p1: T1) => void, listenerContext?: any): boolean;
 	dispatch(p1: T1): void;
 }
 
@@ -137,19 +136,6 @@ export class Signal implements ISignal
 		}
 
 		return -1;
-	}
-
-	// --------------------------------------------------------------------------------------------------
-	// has
-
-	public has()
-	{
-
-	}
-
-	public halt()
-	{
-		this._shouldPropagate = false;
 	}
 
 	//--------------------------------------------------------------------------------------------------

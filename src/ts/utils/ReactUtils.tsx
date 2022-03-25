@@ -1,10 +1,9 @@
-import * as React from "react";
-
 interface IClsObj
 {
 	[key: string]: boolean;
 }
 
+// eslint-disable-next-line import/no-unused-modules
 export class ReactUtils
 {
 	public static appStateCounter: number = 0;
