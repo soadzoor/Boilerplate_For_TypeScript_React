@@ -5,6 +5,7 @@
     "allowSyntheticDefaultImports": true,
     "experimentalDecorators": true,
     "moduleResolution": "node",
+    "importsNotUsedAsValues": "error",
     "module": "esnext",
     "importHelpers": true,
     "target": "es6",

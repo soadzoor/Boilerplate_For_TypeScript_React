@@ -3,6 +3,7 @@
   "version": "0.0.1",
   "description": "TypeScript - React",
   "main": "",
+  "type": "module",
   "scripts": {
     "start": "node build/start",
     "build:dev": "node build/build",
@@ -37,8 +38,10 @@
     "@vitejs/plugin-react": "1.2.0",
     "esbuild": "0.14.27",
     "eslint": "8.11.0",
+    "eslint-import-resolver-typescript": "2.7.0",
     "eslint-plugin-import": "2.25.4",
     "eslint-plugin-react-hooks": "4.3.0",
+    "eslint-plugin-unused-imports": "2.0.0",
     "husky": "7.0.4",
     "lint-staged": "12.3.7",
     "sass": "1.49.9",
