@@ -20,7 +20,7 @@
   "license": "",
   "lint-staged": {
     "*.{ts,tsx}": [
-      "npx tsc -p tsconfig.json",
+      "bash -c tsc -p tsconfig.json",
       "eslint --ext .js,.jsx,.ts,.tsx src --report-unused-disable-directives --max-warnings 0"
     ]
   },
