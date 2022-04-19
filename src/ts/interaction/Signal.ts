@@ -91,7 +91,7 @@ export class Signal implements ISignal
 			binding = this._bindings[prevIndex];
 			if (binding.isOnce !== isOnce)
 			{
-				throw new Error(`You cannot add${isOnce ? "" : "Once" }() then add${!isOnce ? "" : "Once"}() the same listener without removing the relationship first.`);
+				throw new Error(`You cannot add${isOnce ? "" : "Once"}() then add${!isOnce ? "" : "Once"}() the same listener without removing the relationship first.`);
 			}
 		}
 		else
