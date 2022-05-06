@@ -119,7 +119,7 @@ export class Signal implements ISignal
 		}
 		while (this._bindings[n] && binding.priority <= this._bindings[n].priority);
 
-		this._bindings.splice(n+1, 0, binding);
+		this._bindings.splice(n + 1, 0, binding);
 
 		//if (this._highestPriority < binding.pr)
 	}
