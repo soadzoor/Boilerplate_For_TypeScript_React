@@ -6,6 +6,10 @@
 		],
 		"ecmaVersion": 2020
 	},
+	"ignorePatterns": [
+		"build/build.ts",
+		"build/start.ts"
+	],
 	"settings": {
 		"import/resolver": {
 			"typescript": {},
