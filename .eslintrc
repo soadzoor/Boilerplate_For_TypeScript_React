@@ -1,13 +1,11 @@
 {
 	"parser": "@typescript-eslint/parser",
 	"parserOptions": {
-		"project": ["./tsconfig.json"],
+		"project": [
+			"./tsconfig.json"
+		],
 		"ecmaVersion": 2020
 	},
-	"ignorePatterns": [
-		"build/build.ts",
-		"build/start.ts"
-	],
 	"settings": {
 		"import/resolver": {
 			"typescript": {},
@@ -98,14 +96,17 @@
 			{
 				"max": 2,
 				"maxEOF": 1,
-				"maxBOF": 0 
+				"maxBOF": 0
 			}
 		],
 		"no-extra-semi": "error",
 		"no-unreachable": "error",
 		"react-hooks/rules-of-hooks": "error",
 		"react-hooks/exhaustive-deps": "error",
-		"quotes": ["error", "double"],
+		"quotes": [
+			"error",
+			"double"
+		],
 		"prefer-template": "error",
 		"brace-style": [
 			"warn",
@@ -147,10 +148,7 @@
 			"error",
 			{
 				"unusedExports": true,
-				"missingExports": true,
-				"ignoreExports": [
-					"src/ts/main.tsx"
-				]
+				"missingExports": true
 			}
 		],
 		"import/no-extraneous-dependencies": "error",
