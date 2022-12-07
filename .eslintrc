@@ -152,7 +152,10 @@
 			"error",
 			{
 				"unusedExports": true,
-				"missingExports": true
+				"missingExports": true,
+				"ignoreExports": [
+					"src/ts/main.tsx"
+				]
 			}
 		],
 		"import/no-extraneous-dependencies": "error",
