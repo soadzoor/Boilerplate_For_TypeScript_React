@@ -4,6 +4,10 @@
 		"project": ["./tsconfig.json"],
 		"ecmaVersion": 2020
 	},
+	"ignorePatterns": [
+		"build/build.ts",
+		"build/start.ts"
+	],
 	"settings": {
 		"import/resolver": {
 			"typescript": {},
@@ -143,7 +147,10 @@
 			"error",
 			{
 				"unusedExports": true,
-				"missingExports": true
+				"missingExports": true,
+				"ignoreExports": [
+					"src/ts/main.tsx"
+				]
 			}
 		],
 		"import/no-extraneous-dependencies": "error",

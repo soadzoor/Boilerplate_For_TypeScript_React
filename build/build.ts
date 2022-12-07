@@ -1,7 +1,7 @@
 import fs from "fs";
 import child_process from "child_process";
-import esbuild from "esbuild";
-import sass from "sass";
+import esbuild, {Plugin} from "esbuild";
+import {sassPlugin} from "esbuild-sass-plugin";
 
 const {build} = esbuild;
 
@@ -15,12 +15,13 @@ if (args.includes("--prod"))
 {
 	process.env.NODE_ENV = "production";
 }
-const splitCode = true; // for dynamic import (await import)
+const splitCode = false; // for dynamic import (await import)
 const isProduction = process.env.NODE_ENV === "production";
 const buildFolder = isProduction ? BUILD_PROD : BUILD_DEV;
 const checkForTypeErrors = !args.includes("--fast");
 
 const yellowConsole = "\x1b[33m%s\x1b[0m";
+const greenConsole = "\x1b[32m%s\x1b[0m";
 
 const timeStamp = getDateTime();
 let jsFile = "main.js";
@@ -40,7 +41,7 @@ async function buildApp()
 		{
 			if (isProduction)
 			{
-				exec("tsc");
+				exec("tsc", "--noEmit");
 			}
 			else
 			{
@@ -62,54 +63,74 @@ async function buildApp()
 
 	assets(buildFolder);
 
-	const promises = [
-		buildJs(`${buildFolder}/${jsSubFolder}`),
-		css(buildFolder)
+	const methodsToDoAfterBundling: (() => void | Promise<any>)[] = [
+		() =>
+		{
+			const newFile = `main.${timeStamp}.css`;
+			const originalFileFull = `${buildFolder}/${jsSubFolder}/sass/main.css`;
+			const newFileFull = `${buildFolder}/${jsSubFolder}/sass/${newFile}`;
+			shx(`mv ${originalFileFull} ${newFileFull}`);
+
+			const promises: Promise<void>[] = [
+				replaceTextInFile(`${buildFolder}/index.html`, `<link href="sass/main.scss" rel="stylesheet" />`, `<link href="src/sass/${newFile}" rel="stylesheet" />`)
+			];
+
+			return Promise.all(promises);
+		}
 	];
 
-	await Promise.all(promises);
-
-	console.log(yellowConsole, "Adding timestamps to filenames...");
-
-	const methodsToDoAfterBundling = [];
-	const originalJsScriptInHTML = `<script type="module" src="./ts/main.tsx"></script>`;
+	const originalScriptTagInIndexHtml = `<script type="module" src="./ts/main.tsx"></script>`;
 	let finalJsFullPath = "";
+
 	if (splitCode)
 	{
-		const originalJsFilePath = `${jsSubFolder}/main.js`;
-		const newJsFilePath = `${jsSubFolder}/main.${timeStamp}.js`;
+		const originalJsFilePath = `${jsSubFolder}/ts/main.js`;
+		const newJsFilePath = `${jsSubFolder}/ts/main.${timeStamp}.js`;
 		finalJsFullPath = `${buildFolder}/${newJsFilePath}`;
 
 		methodsToDoAfterBundling.push(() =>
 		{
 			shx(`mv ${buildFolder}/${originalJsFilePath} ${finalJsFullPath}`);
 		});
-		await replaceTextInFile(`${buildFolder}/index.html`, originalJsScriptInHTML, `<script type="module" src="${newJsFilePath}"></script>`);
+
+		await replaceTextInFile(`${buildFolder}/index.html`, originalScriptTagInIndexHtml, `<script type="module" src="${newJsFilePath}"></script>`);
 	}
 	else
 	{
 		const originalJsFile = jsFile;
 		jsFile = originalJsFile.replace(".js", `.${timeStamp}.js`);
-		finalJsFullPath = `${buildFolder}/${jsSubFolder}/${jsFile}`
-		await replaceTextInFile(`${buildFolder}/index.html`, originalJsScriptInHTML, `<script src="${jsSubFolder}/${jsFile}"></script>`);
+		finalJsFullPath = `${buildFolder}/${jsSubFolder}/ts/${jsFile}`
+		methodsToDoAfterBundling.push(() =>
+		{
+			shx(`mv ${buildFolder}/${jsSubFolder}/ts/${originalJsFile} ${finalJsFullPath}`);
+		});
+		await replaceTextInFile(`${buildFolder}/index.html`, originalScriptTagInIndexHtml, `<script src="${jsSubFolder}/ts/${jsFile}"></script>`);
 	}
 
-	for (const methodToDo of methodsToDoAfterBundling)
+	const promises = [
+		buildJsAndCss(["./src/ts/main.tsx", "./src/sass/main.scss"], `${buildFolder}/${jsSubFolder}`),
+	];
+
+	await Promise.all(promises);
+
+	console.log(yellowConsole, "Adding timestamps to filenames...");
+
+	for (const method of methodsToDoAfterBundling)
 	{
-		methodToDo();
+		await method();
 	}
 
 	if (isProduction)
 	{
-		console.log("\x1b[33m%s\x1b[0m", "Minifying shaders...");
+		console.log(yellowConsole, "Minifying shaders...");
 		await minifyShaders(finalJsFullPath);
 	}
 
-	console.log("\x1b[32m%s\x1b[0m", "Build done!");
+	console.log(greenConsole, "Build done!");
 	console.timeEnd("Build time");
 }
 
-async function minifyShaders(finalJsFullPath)
+async function minifyShaders(finalJsFullPath: string)
 {
 	// Assumes we're using backticks (`) for shaders, and define "precision highp float" in the beginning
 	const bundleJs = await readTextFile(finalJsFullPath);
@@ -137,7 +158,7 @@ async function minifyShaders(finalJsFullPath)
 	await writeTextFile(finalJsFullPath, optimizedBundleJs);
 }
 
-function minifyGlsl(input)
+function minifyGlsl(input: string)
 {
 	// remove all comments
 	// https://stackoverflow.com/questions/5989315/regex-for-match-replacing-javascript-comments-both-multiline-and-inline
@@ -171,7 +192,7 @@ function minifyGlsl(input)
 	return output;
 }
 
-function formatDateSegment(dateSegment /* number */)
+function formatDateSegment(dateSegment: number)
 {
 	return `${dateSegment}`.length < 2 ? `0${dateSegment}` : `${dateSegment}`;
 }
@@ -190,7 +211,7 @@ function getDateTime()
 	return [year, month, day, hours, minutes, seconds].join("");
 }
 
-function shx(command)
+function shx(command: string)
 {
 	const module = "shx";
 	const args = command;
@@ -198,12 +219,12 @@ function shx(command)
 	return exec_module(module, args);
 }
 
-function exec_module(module, args)
+function exec_module(module: string, args: string)
 {
 	return exec(`"${NODE_MODULES_PATH}/.bin/${module}"`, args);
 }
 
-function exec(command, args)
+function exec(command: string, args: string)
 {
 	//console.log("command", command, args);
 
@@ -232,16 +253,16 @@ function exec(command, args)
 	return result;
 }
 
-function assets(buildFolder)
+function assets(buildFolder: string)
 {
 	console.log(yellowConsole, "Copying assets...");
 	shx(`rm -rf ${buildFolder}/assets`);
 	shx(`cp -R ${LOCAL_ROOT}/src/assets ${buildFolder}/assets`);
 }
 
-function readTextFile(filePath)
+function readTextFile(filePath: string)
 {
-	return new Promise((resolve, reject) =>
+	return new Promise<string>((resolve, reject) =>
 	{
 		fs.readFile(filePath, function (err, data)
 		{
@@ -257,9 +278,9 @@ function readTextFile(filePath)
 	});
 }
 
-function writeTextFile(filePath, data)
+function writeTextFile(filePath: string, data: string)
 {
-	return new Promise((resolve, reject) =>
+	return new Promise<string>((resolve, reject) =>
 	{
 		fs.writeFile(filePath, data, function (err)
 		{
@@ -275,65 +296,16 @@ function writeTextFile(filePath, data)
 	});
 }
 
-async function replaceTextInFile(filePath, oldText, newText)
+async function replaceTextInFile(filePath: string, oldText: string, newText: string)
 {
 	const regExp = new RegExp(oldText, "g");
 	const fileContent = await readTextFile(filePath);
 	await writeTextFile(filePath, fileContent.replace(regExp, newText));
 }
 
-function css(buildFolder)
+function buildJsAndCss(entryPoints: string[], buildFolder: string)
 {
-	return new Promise(async (resolve, reject) =>
-	{
-		console.log(yellowConsole, "Creating CSS from SASS...");
-
-		const outFolder = `${buildFolder}/css`;
-		const originalFileName = `main.scss`;
-		const timeStampedFileName = `main.${timeStamp}.css`;
-		const outFile = `${outFolder}/${timeStampedFileName}`;
-
-		try
-		{
-			const result = await sass.compileAsync(
-				`${LOCAL_ROOT}/src/sass/main.scss`,
-				{
-					sourceMap: !isProduction
-				}
-			);
-
-			shx(`mkdir ${outFolder}`);
-			const promises = [
-				writeTextFile(outFile, result.css)
-			];
-			if (result.map)
-			{
-				promises.push(
-					writeTextFile(`${outFile}.map`, result.map.toString())
-				);
-			}
-			await Promise.all(promises);
-
-			if (isProduction)
-			{
-				exec_module("uglifycss", `${outFile} --output ${outFile}`);
-			}
-
-			await replaceTextInFile(`${buildFolder}/index.html`, `./sass/${originalFileName}`, `./css/${timeStampedFileName}`);
-
-			resolve();
-		}
-		catch (err)
-		{
-			console.error(err);
-			reject();
-		}
-	});
-}
-
-function buildJs(buildFolder)
-{
-	const define = {}
+	const define: Record<string, any> = {}
 
 	// See these for explanation: https://github.com/evanw/esbuild/issues/69
 	// https://github.com/evanw/esbuild/issues/438
@@ -345,16 +317,28 @@ function buildJs(buildFolder)
 		}
 	}
 
-	const options = {
-		entryPoints: ["./src/ts/main.tsx"],
+	const options: esbuild.BuildOptions = {
+		entryPoints: entryPoints,
 		target: "es2017",
 		minify: isProduction,
 		sourcemap: !isProduction,
 		bundle: true,
 		splitting: splitCode,
-		outfile: `${buildFolder}/${jsFile}`,
+		outdir: buildFolder,
 		define: define,
-		treeShaking: true
+		treeShaking: true,
+		metafile: true,
+		loader: {
+			".ttf": "file",
+			".svg": "file",
+		},
+		plugins: [
+			sassPlugin({
+				sourceMap: !isProduction,
+				sourceMapIncludeSources: !isProduction,
+				style: isProduction ? "compressed" : "expanded",
+			}) as Plugin
+		],
 	};
 
 	if (splitCode)
@@ -364,7 +348,7 @@ function buildJs(buildFolder)
 		options.format = "esm";
 	}
 
-	console.log(yellowConsole, "Bundling js...");
+	console.log(yellowConsole, `Bundling js${entryPoints.length > 1 ? ", css, copying assets" : ""}...`);
 
 	return build(options);
 }

@@ -9,6 +9,3 @@ root.render(
 		<App />
 	</React.StrictMode>
 );
-
-// eslint-disable-next-line import/no-unused-modules
-export const app = App;
