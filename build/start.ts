@@ -6,6 +6,9 @@ import {createServer} from "vite";
 		// any valid user config options, plus `mode` and `configFile`
 		configFile: "./vite.config.ts",
 		root: "./src",
+		css: {
+			devSourcemap: true
+		},
 		server: {
 			port: 3000
 		}
