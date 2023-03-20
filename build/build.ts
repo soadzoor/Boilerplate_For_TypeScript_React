@@ -1,6 +1,6 @@
 import fs from "fs";
 import child_process from "child_process";
-import esbuild, {Plugin} from "esbuild";
+import esbuild, {type Plugin} from "esbuild";
 import {sassPlugin} from "esbuild-sass-plugin";
 
 const {build} = esbuild;
