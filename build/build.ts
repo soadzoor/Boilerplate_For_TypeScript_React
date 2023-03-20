@@ -8,7 +8,6 @@ const {build} = esbuild;
 const LOCAL_ROOT = ".";
 const BUILD_DEV = "build/dev";
 const BUILD_PROD = "build/prod";
-const BUILD_TEMP = "build/temp";
 const NODE_MODULES_PATH = "./node_modules";
 const args = process.argv.slice(2);
 if (args.includes("--prod"))
@@ -41,11 +40,11 @@ async function buildApp()
 		{
 			if (isProduction)
 			{
-				exec("tsc", "--noEmit");
+				exec("npm run tsc", "--incremental false");
 			}
 			else
 			{
-				exec("tsc", `--incremental --composite false --tsBuildInfoFile ${BUILD_TEMP}/tsconfig.tsbuildinfo`);
+				exec("npm run tsc", `--incremental true`);
 			}
 		}
 		catch (e)

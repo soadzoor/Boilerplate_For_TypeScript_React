@@ -5,7 +5,7 @@
     "allowSyntheticDefaultImports": true,
     "experimentalDecorators": true,
     "moduleResolution": "node",
-    "importsNotUsedAsValues": "error",
+    "verbatimModuleSyntax": true,
     "module": "esnext",
     "importHelpers": true,
     "target": "es6",

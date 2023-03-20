@@ -8,9 +8,9 @@
     "start-dev": "npx ts-node --esm build/start.ts",
     "build-dev": "npx ts-node --esm build/build.ts",
     "build-prod": "npx ts-node --esm build/build.ts --prod",
-    "cypress": "cypress open",
     "eslint-report": "eslint --ignore-path .gitignore --ext .js,.jsx,.ts,.tsx src --report-unused-disable-directives --max-warnings 0 --cache --cache-strategy content",
     "eslint-fix": "npm run eslint-report -- --fix",
+    "tsc": "tsc",
     "install-git-hooks": "husky install"
   },
   "repository": {
