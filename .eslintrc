@@ -6,10 +6,6 @@
 		],
 		"ecmaVersion": 2020
 	},
-	"ignorePatterns": [
-		"build/build.ts",
-		"build/start.ts"
-	],
 	"settings": {
 		"import/resolver": {
 			"typescript": {},
@@ -109,7 +105,11 @@
 		"react-hooks/exhaustive-deps": "error",
 		"quotes": [
 			"error",
-			"double"
+			"double",
+			{
+				"avoidEscape": true,
+				"allowTemplateLiterals": true
+			}
 		],
 		"prefer-template": "error",
 		"brace-style": [
@@ -154,6 +154,8 @@
 				"unusedExports": true,
 				"missingExports": true,
 				"ignoreExports": [
+					"build/",
+					"vite.config.ts",
 					"src/ts/main.tsx"
 				]
 			}

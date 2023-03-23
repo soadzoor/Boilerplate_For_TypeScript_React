@@ -5,7 +5,6 @@
     "allowSyntheticDefaultImports": true,
     "experimentalDecorators": true,
     "moduleResolution": "node",
-    "verbatimModuleSyntax": true,
     "module": "esnext",
     "importHelpers": true,
     "target": "es6",
@@ -30,7 +29,10 @@
     ]
   },
   "include": [
-    "src/ts/**/*"
+    "src/ts/**/*",
+    "build/start.ts",
+    "build/build.ts",
+    "./vite.config.ts"
   ],
   "exclude": [
     "node_modules"

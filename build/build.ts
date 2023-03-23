@@ -1,6 +1,6 @@
 import fs from "fs";
 import child_process from "child_process";
-import esbuild, {type Plugin} from "esbuild";
+import * as esbuild from "esbuild";
 import {sassPlugin} from "esbuild-sass-plugin";
 
 const {build} = esbuild;
@@ -336,7 +336,7 @@ function buildJsAndCss(entryPoints: string[], buildFolder: string)
 				sourceMap: !isProduction,
 				sourceMapIncludeSources: !isProduction,
 				style: isProduction ? "compressed" : "expanded",
-			}) as Plugin
+			})
 		],
 	};
 
