@@ -98,7 +98,7 @@ async function buildApp()
 	{
 		const originalJsFile = jsFile;
 		jsFile = originalJsFile.replace(".js", `.${timeStamp}.js`);
-		finalJsFullPath = `${buildFolder}/${jsSubFolder}/ts/${jsFile}`
+		finalJsFullPath = `${buildFolder}/${jsSubFolder}/ts/${jsFile}`;
 		methodsToDoAfterBundling.push(() =>
 		{
 			shx(`mv ${buildFolder}/${jsSubFolder}/ts/${originalJsFile} ${finalJsFullPath}`);
@@ -241,7 +241,7 @@ function exec(command: string, args: string)
 	let result;
 	try
 	{
-		result = child_process.execSync(command + " " + args, {stdio: stdio});
+		result = child_process.execSync(`${command} ${args}`, {stdio: stdio});
 	}
 	catch (e)
 	{
@@ -304,7 +304,7 @@ async function replaceTextInFile(filePath: string, oldText: string, newText: str
 
 function buildJsAndCss(entryPoints: string[], buildFolder: string)
 {
-	const define: Record<string, any> = {}
+	const define: Record<string, any> = {};
 
 	// See these for explanation: https://github.com/evanw/esbuild/issues/69
 	// https://github.com/evanw/esbuild/issues/438
@@ -312,7 +312,7 @@ function buildJsAndCss(entryPoints: string[], buildFolder: string)
 	{
 		if (!k.includes("(") && !k.includes(")"))
 		{
-			define[`process.env.${k}`] = JSON.stringify(process.env[k])
+			define[`process.env.${k}`] = JSON.stringify(process.env[k]);
 		}
 	}
 

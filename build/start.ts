@@ -12,8 +12,8 @@ import {createServer} from "vite";
 		server: {
 			port: 3000
 		}
-	})
-	await server.listen()
+	});
+	await server.listen();
 
-	server.printUrls()
-})()
+	server.printUrls();
+})();
