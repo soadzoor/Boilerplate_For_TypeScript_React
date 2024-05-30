@@ -6,8 +6,7 @@ import {Signal} from "../interaction/Signal";
  * "keypress"
  */
 // eslint-disable-next-line import/no-unused-modules
-export class KeyboardListener
-{
+export class KeyboardListener {
 	private static _isCtrlDown: boolean = false;
 	private static _isShiftDown: boolean = false;
 	private static _isAltDown: boolean = false;
@@ -15,8 +14,7 @@ export class KeyboardListener
 	private static _isSpaceDown: boolean = false;
 
 	private static _instance: KeyboardListener;
-	public static getInstance(): KeyboardListener
-	{
+	public static getInstance(): KeyboardListener {
 		return KeyboardListener._instance || (KeyboardListener._instance = new KeyboardListener());
 	}
 
@@ -25,17 +23,14 @@ export class KeyboardListener
 	 * We don't allow it if the current focus is on an input/textarea because in that case
 	 * the user is typing and we don't want to mess with that.
 	 */
-	public static allowEvent(event: KeyboardEvent)
-	{
-		if (event.key === KeyboardListener.KEY_ESCAPE || event.key === KeyboardListener.KEY_ENTER)
-		{
+	public static allowEvent(event: KeyboardEvent) {
+		if (event.key === KeyboardListener.KEY_ESCAPE || event.key === KeyboardListener.KEY_ENTER) {
 			return true;
 		}
 
 		const target = event.target as HTMLElement;
 
-		if (KeyboardListener.isEventTargetAnInput(event))
-		{
+		if (KeyboardListener.isEventTargetAnInput(event)) {
 			// Currently the focus is on an
 			return false;
 		}
@@ -43,8 +38,7 @@ export class KeyboardListener
 		return true;
 	}
 
-	public static isEventTargetAnInput(event: Event)
-	{
+	public static isEventTargetAnInput(event: Event) {
 		const target = event.target as HTMLElement;
 		const name = target.nodeName.toLowerCase();
 
@@ -72,63 +66,53 @@ export class KeyboardListener
 	public signals = {
 		down: Signal.create<KeyboardEvent>(),
 		up: Signal.create<KeyboardEvent>(),
-		windowBlur: Signal.create<Event>() // AKA: focus is lost -> the user clicked outside the browser, or changed tabs, or something similar
+		windowBlur: Signal.create<Event>(), // AKA: focus is lost -> the user clicked outside the browser, or changed tabs, or something similar
 	};
 
 	protected _domElement: any;
 
-	constructor(domElement?: HTMLElement)
-	{
+	constructor(domElement?: HTMLElement) {
 		this._domElement = domElement || document.body;
 
 		this.setEnabled(true);
 	}
 
-	public setEnabled(value: boolean)
-	{
-		if (value)
-		{
+	public setEnabled(value: boolean) {
+		if (value) {
 			this.addListeners();
-		}
-		else
-		{
+		} else {
 			this.removeListeners();
 		}
 	}
 
-	protected addListeners()
-	{
+	protected addListeners() {
 		this._domElement.addEventListener("keydown", this.onKeyDown);
 		this._domElement.addEventListener("keyup", this.onKeyUp);
 		window.addEventListener("blur", this.windowBlur);
 	}
 
-	protected removeListeners()
-	{
+	protected removeListeners() {
 		this._domElement.removeEventListener("keydown", this.onKeyDown);
 		this._domElement.removeEventListener("keyup", this.onKeyUp);
 		window.removeEventListener("blur", this.windowBlur);
 	}
 
-	private windowBlur = (event: Event) =>
-	{
+	private windowBlur = (event: Event) => {
 		this.resetFlags();
 		this.signals.windowBlur.dispatch(event);
 	};
 
-	private resetFlags()
-	{
+	private resetFlags() {
 		KeyboardListener._isAltDown =
 			KeyboardListener._isCtrlDown =
 			KeyboardListener._isShiftDown =
 			KeyboardListener._isTabDown =
-			KeyboardListener._isSpaceDown = false;
+			KeyboardListener._isSpaceDown =
+				false;
 	}
 
-	private onKeyDown = (event: KeyboardEvent) =>
-	{
-		switch (event.key)
-		{
+	private onKeyDown = (event: KeyboardEvent) => {
+		switch (event.key) {
 			case KeyboardListener.KEY_ALT:
 				KeyboardListener._isAltDown = true;
 				break;
@@ -146,8 +130,7 @@ export class KeyboardListener
 				break;
 		}
 
-		if (this.allow(event))
-		{
+		if (this.allow(event)) {
 			this.signals.down.dispatch(event);
 		}
 
@@ -166,10 +149,8 @@ export class KeyboardListener
 		// }
 	};
 
-	private onKeyUp = (event: KeyboardEvent) =>
-	{
-		switch (event.key)
-		{
+	private onKeyUp = (event: KeyboardEvent) => {
+		switch (event.key) {
 			case KeyboardListener.KEY_ALT:
 				KeyboardListener._isAltDown = false;
 				// When alt is released, a blur event is triggered, so we need to prevent that
@@ -190,49 +171,40 @@ export class KeyboardListener
 				break;
 		}
 
-		if (this.allow(event))
-		{
+		if (this.allow(event)) {
 			this.signals.up.dispatch(event);
 		}
 	};
 
-	protected allow(event: KeyboardEvent)
-	{
+	protected allow(event: KeyboardEvent) {
 		return KeyboardListener.allowEvent(event);
 	}
 
-	public get element()
-	{
+	public get element() {
 		return this._domElement;
 	}
 
-	public static get isAltDown()
-	{
+	public static get isAltDown() {
 		return KeyboardListener._isAltDown;
 	}
 
-	public static get isCtrlDown()
-	{
+	public static get isCtrlDown() {
 		return KeyboardListener._isCtrlDown;
 	}
 
-	public static get isShiftDown()
-	{
+	public static get isShiftDown() {
 		return KeyboardListener._isShiftDown;
 	}
 
-	public static get isTabDown()
-	{
+	public static get isTabDown() {
 		return KeyboardListener._isTabDown;
 	}
 
-	public static get isSpaceDown()
-	{
+	public static get isSpaceDown() {
 		return KeyboardListener._isSpaceDown;
 	}
 
-	public dispose()
-	{
+	public dispose() {
 		this.removeListeners();
 	}
 }

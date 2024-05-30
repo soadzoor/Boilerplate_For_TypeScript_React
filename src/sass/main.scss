@@ -11,25 +11,27 @@
 //Scrollbar
 /* width */
 ::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+	width: 8px;
+	height: 8px;
 }
 
 /* Track */
 ::-webkit-scrollbar-track {
-  background: transparent;
+	background: transparent;
 }
 
 /* Handle */
 ::-webkit-scrollbar-thumb {
-  background: #C4C4C4;
-  border: solid 2px white;
-  border-radius: 4px;
-  transition: ease-in-out all .2s;
+	background: #c4c4c4;
+	border: solid 2px white;
+	border-radius: 4px;
+	transition: ease-in-out all 0.2s;
 }
 
 .mdc-top-app-bar {
-	box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+	box-shadow:
+		0 3px 6px rgba(0, 0, 0, 0.16),
+		0 3px 6px rgba(0, 0, 0, 0.23);
 }
 
 html {

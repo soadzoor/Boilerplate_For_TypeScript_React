@@ -1,5 +1,4 @@
-interface ISignal
-{
+interface ISignal {
 	add(listener: Function, listenerContext?: any): void;
 	add(listener: Function, listenerContext?: any): void;
 	addAndCall(listener: Function, listenerContext?: any): void;
@@ -10,25 +9,21 @@ interface ISignal
 	bindings: IBinding[];
 }
 
-interface ISignalP1<T1> extends ISignal
-{
+interface ISignalP1<T1> extends ISignal {
 	add(listener: (p1: T1) => void, listenerContext?: any, priority?: number): void;
 	addOnce(listener: (p1: T1) => void, listenerContext?: any, priority?: number): void;
 	remove(listener: (p1: T1) => void, listenerContext?: any): boolean;
 	dispatch(p1: T1): void;
 }
 
-interface IBinding
-{
+interface IBinding {
 	listener: Function;
 	context?: any;
 	isOnce: boolean;
 	priority: number;
 }
 
-export class Signal implements ISignal
-{
-
+export class Signal implements ISignal {
 	// --------------------------------------------------------------------------------------------------
 	// static create method
 
@@ -37,11 +32,9 @@ export class Signal implements ISignal
 	// public static create<T0, T1>()     : ISignalP2<T0, T1>;
 	// public static create<T0, T1, T2>() : ISignalP3<T0, T1, T2>;
 
-	public static create()
-	{
+	public static create() {
 		return new Signal();
 	}
-
 
 	// --------------------------------------------------------------------------------------------------
 	// private members, constructor
@@ -52,55 +45,47 @@ export class Signal implements ISignal
 
 	protected _shouldPropagate = true;
 
-	constructor()
-	{
+	constructor() {
 		this._bindings = [];
 	}
-
 
 	// --------------------------------------------------------------------------------------------------
 	// add methods
 
 	// TODO support addBefore?
 
-	public add(listener: Function, context?: any, priority = 0)
-	{
+	public add(listener: Function, context?: any, priority = 0) {
 		this.registerListener(listener, false, context, priority);
 	}
 
-	public addAndCall(listener: Function, context?: any, priority = 0)
-	{
+	public addAndCall(listener: Function, context?: any, priority = 0) {
 		this.registerListener(listener, false, context, priority);
 
 		context = context || this;
 		listener.call(context);
 	}
 
-	public addOnce(listener: Function, context?: any, priority = 0)
-	{
+	public addOnce(listener: Function, context?: any, priority = 0) {
 		this.registerListener(listener, true, context, priority);
 	}
 
-	protected registerListener(listener: Function, isOnce: boolean, context: any, priority: number = 0)
-	{
+	protected registerListener(listener: Function, isOnce: boolean, context: any, priority: number = 0) {
 		const prevIndex = this.indexOfListener(listener, context);
 		let binding: IBinding | null = null;
 
-		if (prevIndex !== -1)
-		{
+		if (prevIndex !== -1) {
 			binding = this._bindings[prevIndex];
-			if (binding.isOnce !== isOnce)
-			{
-				throw new Error(`You cannot add${isOnce ? "" : "Once"}() then add${!isOnce ? "" : "Once"}() the same listener without removing the relationship first.`);
+			if (binding.isOnce !== isOnce) {
+				throw new Error(
+					`You cannot add${isOnce ? "" : "Once"}() then add${!isOnce ? "" : "Once"}() the same listener without removing the relationship first.`,
+				);
 			}
-		}
-		else
-		{
+		} else {
 			binding = {
-				listener : listener,
-				context  : context,
-				isOnce   : isOnce,
-				priority : priority
+				listener: listener,
+				context: context,
+				isOnce: isOnce,
+				priority: priority,
 			};
 
 			const b = binding;
@@ -109,28 +94,22 @@ export class Signal implements ISignal
 		}
 	}
 
-	protected addBinding(binding: IBinding)
-	{
+	protected addBinding(binding: IBinding) {
 		let n = this._bindings.length;
 
-		do
-		{
+		do {
 			--n;
-		}
-		while (this._bindings[n] && binding.priority <= this._bindings[n].priority);
+		} while (this._bindings[n] && binding.priority <= this._bindings[n].priority);
 
 		this._bindings.splice(n + 1, 0, binding);
 
 		//if (this._highestPriority < binding.pr)
 	}
 
-	protected indexOfListener(listener: Function, context: any)
-	{
-		for (let i = this._bindings.length - 1; i >= 0; --i)
-		{
+	protected indexOfListener(listener: Function, context: any) {
+		for (let i = this._bindings.length - 1; i >= 0; --i) {
 			const binding = this._bindings[i];
-			if (binding.listener === listener && binding.context === context)
-			{
+			if (binding.listener === listener && binding.context === context) {
 				return i;
 			}
 		}
@@ -147,12 +126,10 @@ export class Signal implements ISignal
 	 *
 	 * TODO return listener?
 	 */
-	public remove(listener: Function, context?: any)
-	{
+	public remove(listener: Function, context?: any) {
 		const i = this.indexOfListener(listener, context);
 
-		if (i !== -1)
-		{
+		if (i !== -1) {
 			this._bindings.splice(i, 1);
 
 			return true;
@@ -161,17 +138,14 @@ export class Signal implements ISignal
 		return false;
 	}
 
-	public removeAll()
-	{
+	public removeAll() {
 		this._bindings.length = 0;
 	}
-
 
 	// --------------------------------------------------------------------------------------------------
 	// dispatch
 
-	public dispatch()
-	{
+	public dispatch() {
 		const paramsArr = Array.prototype.slice.call(arguments);
 		this._shouldPropagate = true; //in case `halt` was called before dispatch or during the previous dispatch.
 
@@ -187,24 +161,20 @@ export class Signal implements ISignal
 		//
 		// const bindings = this._bindings.slice();
 
-		for (let i = bindings.length - 1; i >= 0; --i)
-		{
+		for (let i = bindings.length - 1; i >= 0; --i) {
 			const result = bindings[i].listener.apply(bindings[i].context, paramsArr);
 
-			if (result === false || !this._shouldPropagate)
-			{
+			if (result === false || !this._shouldPropagate) {
 				break;
 			}
 		}
 	}
 
-	public dispose()
-	{
+	public dispose() {
 		this.removeAll();
 	}
 
-	public get bindings()
-	{
+	public get bindings() {
 		return this._bindings;
 	}
 }

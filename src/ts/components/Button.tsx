@@ -5,16 +5,11 @@ const ButtonStyled = styled.div({
 	border: "1px solid black",
 });
 
-interface IProps
-{
+interface IProps {
 	label: string;
 	onClick: () => void;
 }
 
-export default function Button(props: IProps)
-{
-	return (
-		<ButtonStyled onClick={props.onClick}>{props.label}</ButtonStyled>
-	);
+export default function Button(props: IProps) {
+	return <ButtonStyled onClick={props.onClick}>{props.label}</ButtonStyled>;
 }
-

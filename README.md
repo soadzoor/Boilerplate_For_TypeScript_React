@@ -1,4 +1,5 @@
 ## Setup
+
 Install Node Version Manager (NVM)
 Run:
 `nvm use`
@@ -9,6 +10,7 @@ Note, that if you have an M1 mac, you might NOT want to use NVM afterall (until 
 So in this case, just download/install node from the official website.
 
 ## Upgrade libs in package.json
+
 Run:
 `npx npm-check-updates -u` every once in a while to keep our libs up to date
 
@@ -24,6 +26,7 @@ Production (minified):
 `npm run build-prod`
 
 ### Lint, git hooks
+
 `eslint-report` reports lint problems, like "something has been exported from a file, but it's not imported anywhere", and some code formatting stuff
 
 `eslint-fix` also tries to fix these problems automatically (not every problem can be fixed this way, some type of problems need human interaction)
@@ -39,21 +42,25 @@ For development, you can run `npm run start-dev`, and visit [localhost:3000](loc
 You can make changes to the sourcefiles, and you'll see the changes immediately.
 Note that this feature is only supported by CSS, and functional components. If you make changes to class-based components, and you save your file, you'll get a full-page reload, unfortunately. (This is one more reason why we tend to use functional components in the future - every new component should be a functional component, we shouldn't create any new class-based components)
 
-### cypress: 
+### cypress:
+
 Enter your user credentials (email and password) in the cypress.config.ts file (Don't commit the changes!)
 `npm run cypress`
+
 - You might need to change the baseUrl in `cypress.config.ts` according to your local environment
 
 ## General overview
 
-Used technologies, libraries:  
+Used technologies, libraries:
+
 - TypeScript
 - React
 - vite
 
 ## FAQ
+
 - For M1 mac chips, if `npm install` results in errors, logging stuff about node-gyp and node-canvas, you probably need to install some dependencies first with brew:
-`brew install pkg-config cairo pango libpng jpeg giflib librsvg`
+  `brew install pkg-config cairo pango libpng jpeg giflib librsvg`
 - Also, with M1 mac chips, NVM is not natively supported, so you might want to download node.js from the official website...
 
 Then try again `npm install`

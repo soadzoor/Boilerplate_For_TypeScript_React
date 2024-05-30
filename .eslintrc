@@ -46,47 +46,12 @@
 			}
 		],
 		"@typescript-eslint/await-thenable": "error",
-		"@typescript-eslint/type-annotation-spacing": [
-			"error",
-			{
-				"before": false,
-				"after": true,
-				"overrides": {
-					"arrow": {
-						"before": true,
-						"after": true
-					}
-				}
-			}
-		],
-		"@typescript-eslint/member-delimiter-style": [
-			"error",
-			{
-				"multiline": {
-					"delimiter": "semi",
-					"requireLast": true
-				},
-				"singleline": {
-					"delimiter": "semi",
-					"requireLast": false
-				},
-				"multilineDetection": "brackets"
-			}
-		],
+		"import/no-named-as-default": "off",
 		"eol-last": [
 			"error",
 			"always"
 		],
-		"no-trailing-spaces": "error",
 		"space-infix-ops": "error",
-		"space-before-function-paren": [
-			"error",
-			{
-				"anonymous": "always",
-				"named": "never",
-				"asyncArrow": "always"
-			}
-		],
 		"linebreak-style": [
 			"error",
 			"unix"
@@ -103,40 +68,10 @@
 		"no-unreachable": "error",
 		"react-hooks/rules-of-hooks": "error",
 		"react-hooks/exhaustive-deps": "error",
-		"quotes": [
-			"error",
-			"double",
-			{
-				"avoidEscape": true,
-				"allowTemplateLiterals": true
-			}
-		],
 		"prefer-template": "error",
-		"brace-style": [
-			"warn",
-			"allman",
-			{
-				"allowSingleLine": true
-			}
-		],
-		"object-curly-spacing": [
-			"error",
-			"never"
-		],
 		"no-useless-concat": "error",
-		"curly": "error",
-		"indent": [
-			"error",
-			"tab",
-			{
-				"SwitchCase": 1
-			}
-		],
-		"template-curly-spacing": [
-			"error",
-			"never"
-		],
 		"require-await": "error",
+		"no-return-await": "error",
 		"no-alert": [
 			"error"
 		],
@@ -154,21 +89,23 @@
 				"unusedExports": true,
 				"missingExports": true,
 				"ignoreExports": [
+					"test/",
+					"cypress/",
 					"build/",
+					"cypress.config.ts",
 					"vite.config.ts",
-					"src/ts/main.tsx"
+					"jest.config.js",
+					"src/ts/main.tsx",
+					"src/ts/offline_utils/PDFTileGenerator/PDFTileGenerator.ts",
+					"src/ts/offline_utils/PDFTileGenerator/PDFTileCreator.ts",
+					"src/ts/offline_utils/PDFTileGenerator/PNGtoWEBP.ts",
+					"src/ts/offline_utils/scss/AddPrefixToSCSSClasses.ts",
+					"src/ts/offline_utils/ReplaceAliases.js"
 				]
 			}
 		],
-		"import/no-extraneous-dependencies": "error",
 		"unused-imports/no-unused-imports": "error",
-		"no-multi-spaces": "error",
 		"no-empty-function": "error",
-		"keyword-spacing": "error",
-		"semi": [
-			"error",
-			"always"
-		],
 		"no-unneeded-ternary": "error"
 	}
 }
