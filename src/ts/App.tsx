@@ -13,9 +13,9 @@ export const App = () => {
 	useEffect(() => {
 		const onKeyDown = (event: KeyboardEvent) => {
 			if (event.key === KeyboardListener.KEY_ARROW_UP) {
-				setCount(c => c + 1);
+				setCount((c) => c + 1);
 			} else if (event.key === KeyboardListener.KEY_ARROW_DOWN) {
-				setCount(c => c - 1);
+				setCount((c) => c - 1);
 			}
 		};
 		KeyboardListener.getInstance().signals.down.add(onKeyDown);
@@ -23,7 +23,7 @@ export const App = () => {
 		return () => {
 			KeyboardListener.getInstance().signals.down.remove(onKeyDown);
 		};
-	}, [])
+	}, []);
 
 	return (
 		<div>

@@ -60,13 +60,7 @@ async function buildApp() {
 			const newFileFull = `${buildFolder}/${jsSubFolder}/sass/${newFile}`;
 			shx(`mv ${originalFileFull} ${newFileFull}`);
 
-			const promises: Promise<void>[] = [
-				replaceTextInFile(
-					`${buildFolder}/index.html`,
-					`href="sass/main.scss"`,
-					`href="src/sass/${newFile}"`,
-				),
-			];
+			const promises: Promise<void>[] = [replaceTextInFile(`${buildFolder}/index.html`, `href="sass/main.scss"`, `href="src/sass/${newFile}"`)];
 
 			return Promise.all(promises);
 		},
