@@ -63,8 +63,8 @@ async function buildApp() {
 			const promises: Promise<void>[] = [
 				replaceTextInFile(
 					`${buildFolder}/index.html`,
-					`<link href="sass/main.scss" rel="stylesheet" />`,
-					`<link href="src/sass/${newFile}" rel="stylesheet" />`,
+					`href="sass/main.scss"`,
+					`href="src/sass/${newFile}"`,
 				),
 			];
 
@@ -72,7 +72,7 @@ async function buildApp() {
 		},
 	];
 
-	const originalScriptTagInIndexHtml = `<script type="module" src="./ts/main.tsx"></script>`;
+	const originalScriptTagInIndexHtml = `src="./ts/main.tsx"`;
 	let finalJsFullPath = "";
 
 	if (splitCode) {
@@ -84,7 +84,7 @@ async function buildApp() {
 			shx(`mv ${buildFolder}/${originalJsFilePath} ${finalJsFullPath}`);
 		});
 
-		await replaceTextInFile(`${buildFolder}/index.html`, originalScriptTagInIndexHtml, `<script type="module" src="${newJsFilePath}"></script>`);
+		await replaceTextInFile(`${buildFolder}/index.html`, originalScriptTagInIndexHtml, `src="${newJsFilePath}"`);
 	} else {
 		const originalJsFile = jsFile;
 		jsFile = originalJsFile.replace(".js", `.${timeStamp}.js`);
