@@ -2,7 +2,6 @@ interface IClsObj {
 	[key: string]: boolean;
 }
 
-// eslint-disable-next-line import/no-unused-modules
 export class ReactUtils {
 	public static appStateCounter: number = 0;
 	public static lastStateId: number = 0;

@@ -1,4 +1,3 @@
-// eslint-disable-next-line import/no-unused-modules
 export class MathUtils {
 	public static getNewRandomGUID() {
 		return Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);

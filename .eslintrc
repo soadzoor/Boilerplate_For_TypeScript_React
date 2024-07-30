@@ -17,18 +17,24 @@
 					".tsx"
 				]
 			}
+		},
+		"react": {
+			"version": "detect"
 		}
 	},
 	"extends": [
 		"plugin:import/errors",
 		"plugin:import/warnings",
-		"plugin:import/typescript"
+		"plugin:import/typescript",
+		"plugin:sonarjs/recommended-legacy"
 	],
 	"plugins": [
 		"import",
+		"react",
 		"react-hooks",
 		"@typescript-eslint",
-		"unused-imports"
+		"unused-imports",
+		"sonarjs"
 	],
 	"rules": {
 		// We're using typescript's resolver
@@ -46,6 +52,15 @@
 			}
 		],
 		"@typescript-eslint/await-thenable": "error",
+		"no-self-assign": "error",
+		"sonarjs/prefer-single-boolean-return": "off",
+		"sonarjs/no-duplicate-string": "off",
+		"sonarjs/no-collapsible-if": "off",
+		"sonarjs/no-inverted-boolean-check": "off",
+		"sonarjs/no-small-switch": "off",
+		"sonarjs/no-nested-template-literals": "off",
+		"sonarjs/no-nested-switch": "off",
+		"curly": "error",
 		"import/no-named-as-default": "off",
 		"eol-last": [
 			"error",
@@ -66,8 +81,18 @@
 		],
 		"no-extra-semi": "error",
 		"no-unreachable": "error",
+		"react/prefer-read-only-props": "error",
+		"react/no-unused-prop-types": "error",
+		"react/no-unused-state": "error",
 		"react-hooks/rules-of-hooks": "error",
 		"react-hooks/exhaustive-deps": "error",
+		"react/function-component-definition": [
+			2,
+			{
+				"namedComponents": "arrow-function",
+				"unnamedComponents": "arrow-function",
+			}
+		],
 		"prefer-template": "error",
 		"no-useless-concat": "error",
 		"require-await": "error",
@@ -89,22 +114,13 @@
 				"unusedExports": true,
 				"missingExports": true,
 				"ignoreExports": [
-					"test/",
-					"cypress/",
+					"src/ts/utils/",
 					"build/",
-					"cypress.config.ts",
 					"vite.config.ts",
-					"jest.config.js",
-					"src/ts/main.tsx",
-					"src/ts/offline_utils/PDFTileGenerator/PDFTileGenerator.ts",
-					"src/ts/offline_utils/PDFTileGenerator/PDFTileCreator.ts",
-					"src/ts/offline_utils/PDFTileGenerator/PNGtoWEBP.ts",
-					"src/ts/offline_utils/scss/AddPrefixToSCSSClasses.ts",
-					"src/ts/offline_utils/ReplaceAliases.js"
+					"src/ts/main.tsx"
 				]
 			}
 		],
-		"unused-imports/no-unused-imports": "error",
 		"no-empty-function": "error",
 		"no-unneeded-ternary": "error"
 	}

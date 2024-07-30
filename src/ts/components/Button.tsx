@@ -6,10 +6,10 @@ const ButtonStyled = styled.div({
 });
 
 interface IProps {
-	label: string;
-	onClick: () => void;
+	readonly label: string;
+	readonly onClick: () => void;
 }
 
-export default function Button(props: IProps) {
+export const Button = (props: IProps) => {
 	return <ButtonStyled onClick={props.onClick}>{props.label}</ButtonStyled>;
-}
+};

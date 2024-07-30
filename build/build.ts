@@ -214,15 +214,7 @@ function exec(command: string, args: string) {
 		2,
 	];
 
-	let result;
-	try {
-		result = child_process.execSync(`${command} ${args}`, {stdio: stdio});
-	} catch (e) {
-		// this is needed for messages to display when from the typescript watcher
-		throw e;
-	}
-
-	return result;
+	return child_process.execSync(`${command} ${args}`, {stdio: stdio});
 }
 
 function assets(buildFolder: string) {

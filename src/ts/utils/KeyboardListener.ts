@@ -5,7 +5,6 @@ import {Signal} from "../interaction/Signal";
  * https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/keyCode
  * "keypress"
  */
-// eslint-disable-next-line import/no-unused-modules
 export class KeyboardListener {
 	private static _isCtrlDown: boolean = false;
 	private static _isShiftDown: boolean = false;
