@@ -11,20 +11,24 @@ export const App = () => {
 	}, [count]);
 
 	useEffect(() => {
-		const onMouseDown = () => {
-			setCount(c => c + 1);
+		const onKeyDown = (event: KeyboardEvent) => {
+			if (event.key === KeyboardListener.KEY_ARROW_UP) {
+				setCount(c => c + 1);
+			} else if (event.key === KeyboardListener.KEY_ARROW_DOWN) {
+				setCount(c => c - 1);
+			}
 		};
-		KeyboardListener.getInstance().signals.down.add(onMouseDown);
+		KeyboardListener.getInstance().signals.down.add(onKeyDown);
 
 		return () => {
-			KeyboardListener.getInstance().signals.down.remove(onMouseDown);
+			KeyboardListener.getInstance().signals.down.remove(onKeyDown);
 		};
 	}, [])
 
 	return (
 		<div>
 			<div>{BrowserUtils.siteUrl}</div>
-			Hello React
+			Hello React!!
 			<div>{count}</div>
 			<Button
 				onClick={onButtonClick}
