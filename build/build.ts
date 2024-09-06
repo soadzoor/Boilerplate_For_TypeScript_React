@@ -86,7 +86,7 @@ async function buildApp() {
 		methodsToDoAfterBundling.push(() => {
 			shx(`mv ${buildFolder}/${jsSubFolder}/ts/${originalJsFile} ${finalJsFullPath}`);
 		});
-		await replaceTextInFile(`${buildFolder}/index.html`, originalScriptTagInIndexHtml, `<script src="${jsSubFolder}/ts/${jsFile}"></script>`);
+		await replaceTextInFile(`${buildFolder}/index.html`, originalScriptTagInIndexHtml, `src="${jsSubFolder}/ts/${jsFile}"`);
 	}
 
 	const promises = [buildJsAndCss(["./src/ts/main.tsx", "./src/sass/main.scss"], `${buildFolder}/${jsSubFolder}`)];
