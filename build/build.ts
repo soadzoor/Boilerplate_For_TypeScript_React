@@ -49,7 +49,7 @@ async function buildApp() {
 
 	shx(`rm -rf ${buildFolder}`);
 	shx(`mkdir ${buildFolder}/`);
-	shx(`cp src/index.html ${buildFolder}/index.html`);
+	shx(`cp index.html ${buildFolder}/index.html`);
 
 	assets(buildFolder);
 
@@ -66,7 +66,7 @@ async function buildApp() {
 		},
 	];
 
-	const originalScriptTagInIndexHtml = `src="./ts/main.tsx"`;
+	const originalScriptTagInIndexHtml = `src="src/ts/main.tsx"`;
 	let finalJsFullPath = "";
 
 	if (splitCode) {
@@ -141,7 +141,7 @@ function minifyGlsl(input: string) {
 		.replace(/(\/\*(?:(?!\*\/).|[\n\r])*\*\/)/g, "") // multiline comment
 		.replace(/(\/\/[^\n\r]*[\n\r]+)/g, ""); // single line comment
 
-	// replace defitionions with values throughout the whole glsl code
+	// replace definitions with values throughout the whole glsl code
 	let indexOfDefine = output.indexOf("#define");
 	while (indexOfDefine > -1) {
 		const endOfLineIndex = output.indexOf("\n", indexOfDefine);

@@ -2,6 +2,7 @@ import {useCallback, useState, useEffect} from "react";
 import {Button} from "./components/Button";
 import {BrowserUtils} from "./utils/BrowserUtils";
 import {KeyboardListener} from "./utils/KeyboardListener";
+import ShareIcon from "./components/svgs/share.svg?react";
 
 export const App = () => {
 	const [count, setCount] = useState<number>(0);
@@ -33,6 +34,7 @@ export const App = () => {
 			<Button
 				onClick={onButtonClick}
 				label="Click me!"
+				Icon={ShareIcon}
 			/>
 		</div>
 	);

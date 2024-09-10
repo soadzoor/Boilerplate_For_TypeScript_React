@@ -4,7 +4,7 @@ import {createServer} from "vite";
 	const server = await createServer({
 		// any valid user config options, plus `mode` and `configFile`
 		configFile: "./vite.config.ts",
-		root: "./src",
+		root: "./",
 		css: {
 			devSourcemap: true,
 		},
